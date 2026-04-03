@@ -1,0 +1,45 @@
+# --- Security & Secrets ---
+.env
+*.pem
+wallet.json
+config.local.json
+secrets.json
+auth.json
+
+# --- System Files ---
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# --- Dependency Folders ---
+node_modules/
+vendor/
+target/
+bin/
+pkg/
+obj/
+
+# --- Logs & Performance ---
+npm-debug.log*
+yarn-error.log*
+yarn-debug.log*
+*.log
+.pnpm-debug.log*
+logs/
+
+# --- Build & Compiled Outputs ---
+dist/
+build/
+out/
+*.exe
+*.dll
+*.so
+*.dylib
+
+# --- IDE & Editor Settings ---
+.vscode/
+.idea/
+*.swp
+*.swo
+.project
+.settings/

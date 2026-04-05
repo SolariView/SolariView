@@ -301,6 +301,8 @@ SolariView is the foundation of a broader privacy-first portfolio intelligence p
 
 Watching your assets shouldn't mean being watched. SolariView reads directly from public RPC endpoints — no account required, no API keys by default, no usage logs sent anywhere.
 
+SolariView displays on-chain data for informational purposes only. Nothing in this software constitutes financial advice.
+
 ## License
 
 Distributed under the MIT License. See [LICENSE](LICENSE) for details.

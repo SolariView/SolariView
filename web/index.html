@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SolariView</title>
+  <style>
+    :root {
+      --bg: #0d0f12;
+      --surface: #161a1f;
+      --border: #2a2e35;
+      --accent: #f59e0b;
+      --accent-dim: #92400e;
+      --text: #e2e8f0;
+      --muted: #64748b;
+      --green: #4ade80;
+      --red: #f87171;
+      --radius: 8px;
+      --font-mono: "JetBrains Mono", "Fira Code", ui-monospace, monospace;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: system-ui, sans-serif;
+      min-height: 100vh;
+      padding: 2rem 1rem;
+    }
+
+    header {
+      max-width: 860px;
+      margin: 0 auto 2.5rem;
+    }
+
+    header h1 {
+      font-size: 1.75rem;
+      letter-spacing: -0.02em;
+      color: var(--accent);
+    }
+
+    header p {
+      color: var(--muted);
+      margin-top: 0.35rem;
+      font-size: 0.9rem;
+    }
+
+    .badge {
+      display: inline-block;
+      background: var(--accent-dim);
+      color: var(--accent);
+      font-size: 0.7rem;
+      font-family: var(--font-mono);
+      padding: 2px 7px;
+      border-radius: 20px;
+      margin-left: 0.5rem;
+      vertical-align: middle;
+    }
+
+    main {
+      max-width: 860px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem 1.5rem;
+    }
+
+    .card h2 {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      margin-bottom: 1rem;
+    }
+
+    .form-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      align-items: flex-end;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+      flex: 1 1 220px;
+    }
+
+    label {
+      font-size: 0.75rem;
+      color: var(--muted);
+      font-family: var(--font-mono);
+    }
+
+    input, select {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      border-radius: calc(var(--radius) - 2px);
+      padding: 0.5rem 0.75rem;
+      font-size: 0.85rem;
+      font-family: var(--font-mono);
+      width: 100%;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+
+    input:focus, select:focus {
+      border-color: var(--accent);
+    }
+
+    button {
+      background: var(--accent);
+      color: #000;
+      border: none;
+      border-radius: calc(var(--radius) - 2px);
+      padding: 0.55rem 1.25rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: opacity 0.15s;
+      flex-shrink: 0;
+    }
+
+    button:hover { opacity: 0.85; }
+    button:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    .output {
+      margin-top: 1rem;
+      display: none;
+    }
+
+    .output.visible { display: block; }
+
+    pre {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: calc(var(--radius) - 2px);
+      padding: 1rem;
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      overflow-x: auto;
+      white-space: pre-wrap;
+      word-break: break-all;
+      line-height: 1.6;
+    }
+
+    .status-ok  { color: var(--green); }
+    .status-err { color: var(--red); }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.82rem;
+      font-family: var(--font-mono);
+    }
+
+    th {
+      text-align: left;
+      color: var(--muted);
+      font-weight: 500;
+      border-bottom: 1px solid var(--border);
+      padding: 0.4rem 0.5rem;
+    }
+
+    td {
+      padding: 0.45rem 0.5rem;
+      border-bottom: 1px solid #1e2228;
+    }
+
+    td.num { text-align: right; color: var(--green); }
+    td.zero { text-align: right; color: var(--muted); }
+    td.dim { color: var(--muted); font-size: 0.75rem; }
+
+    footer {
+      max-width: 860px;
+      margin: 3rem auto 0;
+      color: var(--muted);
+      font-size: 0.75rem;
+      text-align: center;
+    }
+
+    footer a { color: var(--accent); text-decoration: none; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>SolariView <span class="badge">local</span></h1>
+    <p>On-chain clarity, local-first security. All reads go directly to public RPC nodes — no intermediary APIs.</p>
+  </header>
+
+  <main>
+
+    <!-- Native Balances -->
+    <div class="card">
+      <h2>Native Balances</h2>
+      <div class="form-row">
+        <div class="form-group" style="flex: 3 1 320px;">
+          <label for="bal-address">Wallet Address</label>
+          <input id="bal-address" type="text" placeholder="0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045" spellcheck="false" />
+        </div>
+        <div class="form-group" style="flex: 1 1 140px;">
+          <label for="bal-chain">Chain(s)</label>
+          <select id="bal-chain">
+            <option value="all">All chains</option>
+            <option value="ethereum">Ethereum</option>
+            <option value="base">Base</option>
+            <option value="arbitrum">Arbitrum</option>
+            <option value="optimism">Optimism</option>
+            <option value="polygon">Polygon</option>
+            <option value="bsc">BNB Chain</option>
+          </select>
+        </div>
+        <button onclick="fetchBalance()">Query</button>
+      </div>
+      <div class="output" id="bal-output"></div>
+    </div>
+
+    <!-- ERC-20 Token -->
+    <div class="card">
+      <h2>ERC-20 Token Balance</h2>
+      <div class="form-row">
+        <div class="form-group" style="flex: 2 1 240px;">
+          <label for="tok-address">Wallet Address</label>
+          <input id="tok-address" type="text" placeholder="0x..." spellcheck="false" />
+        </div>
+        <div class="form-group" style="flex: 2 1 240px;">
+          <label for="tok-contract">Token Contract</label>
+          <input id="tok-contract" type="text" placeholder="0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48 (USDC)" spellcheck="false" />
+        </div>
+        <div class="form-group" style="flex: 1 1 130px;">
+          <label for="tok-chain">Chain</label>
+          <select id="tok-chain">
+            <option value="ethereum">Ethereum</option>
+            <option value="base">Base</option>
+            <option value="arbitrum">Arbitrum</option>
+            <option value="optimism">Optimism</option>
+            <option value="polygon">Polygon</option>
+            <option value="bsc">BNB Chain</option>
+          </select>
+        </div>
+        <button onclick="fetchToken()">Query</button>
+      </div>
+      <div class="output" id="tok-output"></div>
+    </div>
+
+    <!-- ERC-721 NFT -->
+    <div class="card">
+      <h2>ERC-721 NFT Balance</h2>
+      <div class="form-row">
+        <div class="form-group" style="flex: 2 1 240px;">
+          <label for="nft-address">Wallet Address</label>
+          <input id="nft-address" type="text" placeholder="0x..." spellcheck="false" />
+        </div>
+        <div class="form-group" style="flex: 2 1 240px;">
+          <label for="nft-contract">Collection Contract</label>
+          <input id="nft-contract" type="text" placeholder="0xBC4CA0EdA7647A8aB7C2061c2E118A18a936f13D (BAYC)" spellcheck="false" />
+        </div>
+        <div class="form-group" style="flex: 1 1 130px;">
+          <label for="nft-chain">Chain</label>
+          <select id="nft-chain">
+            <option value="ethereum">Ethereum</option>
+            <option value="base">Base</option>
+            <option value="arbitrum">Arbitrum</option>
+            <option value="optimism">Optimism</option>
+            <option value="polygon">Polygon</option>
+          </select>
+        </div>
+        <button onclick="fetchNFT()">Query</button>
+      </div>
+      <div class="output" id="nft-output"></div>
+    </div>
+
+    <!-- Activity -->
+    <div class="card">
+      <h2>On-Chain Activity (tx count)</h2>
+      <div class="form-row">
+        <div class="form-group" style="flex: 3 1 320px;">
+          <label for="act-address">Wallet Address</label>
+          <input id="act-address" type="text" placeholder="0x..." spellcheck="false" />
+        </div>
+        <div class="form-group" style="flex: 1 1 140px;">
+          <label for="act-chain">Chain(s)</label>
+          <select id="act-chain">
+            <option value="all">All chains</option>
+            <option value="ethereum">Ethereum</option>
+            <option value="base">Base</option>
+            <option value="arbitrum">Arbitrum</option>
+            <option value="optimism">Optimism</option>
+            <option value="polygon">Polygon</option>
+            <option value="bsc">BNB Chain</option>
+          </select>
+        </div>
+        <button onclick="fetchActivity()">Query</button>
+      </div>
+      <div class="output" id="act-output"></div>
+    </div>
+
+    <!-- RPC Status -->
+    <div class="card">
+      <h2>RPC Status</h2>
+      <div class="form-row">
+        <div class="form-group" style="flex: 1 1 160px;">
+          <label for="status-chain">Chain(s)</label>
+          <select id="status-chain">
+            <option value="all">All chains</option>
+            <option value="ethereum">Ethereum</option>
+            <option value="base">Base</option>
+            <option value="arbitrum">Arbitrum</option>
+            <option value="optimism">Optimism</option>
+            <option value="polygon">Polygon</option>
+            <option value="bsc">BNB Chain</option>
+          </select>
+        </div>
+        <button onclick="fetchStatus()">Check</button>
+      </div>
+      <div class="output" id="status-output"></div>
+    </div>
+
+  </main>
+
+  <footer>
+    <p>SolariView runs locally on <code>127.0.0.1</code>. No data leaves your machine. &mdash;
+      <a href="https://github.com/SolariView/SolariView" target="_blank" rel="noopener noreferrer">GitHub</a>
+    </p>
+  </footer>
+
+  <script>
+    function esc(str) {
+      return String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+
+    function showLoading(id) {
+      const el = document.getElementById(id);
+      el.classList.add("visible");
+      el.innerHTML = '<pre style="color:var(--muted)">Loading…</pre>';
+    }
+
+    function showTable(id, headers, rows) {
+      const el = document.getElementById(id);
+      el.classList.add("visible");
+      const ths = headers.map(h => `<th>${esc(h)}</th>`).join("");
+      const trs = rows.map(cells =>
+        `<tr>${cells.map((c, i) => {
+          const cls = c.cls ?? (i === cells.length - 1 && typeof c.val === "number" ? (c.val === 0 ? "zero" : "num") : "");
+          return `<td class="${esc(cls)}">${esc(String(c.val ?? c))}</td>`;
+        }).join("")}</tr>`
+      ).join("");
+      el.innerHTML = `<table><thead><tr>${ths}</tr></thead><tbody>${trs}</tbody></table>`;
+    }
+
+    function showError(id, message) {
+      const el = document.getElementById(id);
+      el.classList.add("visible");
+      el.innerHTML = `<pre class="status-err">Error: ${esc(message)}</pre>`;
+    }
+
+    function showJSON(id, data) {
+      const el = document.getElementById(id);
+      el.classList.add("visible");
+      el.innerHTML = `<pre>${esc(JSON.stringify(data, null, 2))}</pre>`;
+    }
+
+    async function apiFetch(path) {
+      const res = await fetch(path);
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error ?? res.statusText);
+      return json;
+    }
+
+    async function fetchBalance() {
+      const address = document.getElementById("bal-address").value.trim();
+      const chain = document.getElementById("bal-chain").value;
+      if (!address) return alert("Enter a wallet address.");
+      showLoading("bal-output");
+      try {
+        const data = await apiFetch(`/api/balance?address=${encodeURIComponent(address)}&chain=${chain}`);
+        const rows = data.results.map(r => {
+          const val = parseFloat(r.formatted);
+          return [
+            r.chain,
+            r.symbol,
+            { val: val === 0 ? "0" : val.toFixed(6), cls: val === 0 ? "zero" : "num" },
+            { val: r.explorer, cls: "dim" },
+          ];
+        });
+        showTable("bal-output", ["Chain", "Symbol", "Balance", "Explorer"], rows);
+      } catch (err) {
+        showError("bal-output", err.message);
+      }
+    }
+
+    async function fetchToken() {
+      const address = document.getElementById("tok-address").value.trim();
+      const token = document.getElementById("tok-contract").value.trim();
+      const chain = document.getElementById("tok-chain").value;
+      if (!address || !token) return alert("Enter both wallet and token addresses.");
+      showLoading("tok-output");
+      try {
+        const data = await apiFetch(`/api/token?address=${encodeURIComponent(address)}&token=${encodeURIComponent(token)}&chain=${chain}`);
+        showTable("tok-output",
+          ["Chain", "Token", "Symbol", "Balance", "Contract"],
+          [[
+            data.chain,
+            data.token,
+            data.symbol,
+            { val: parseFloat(data.formatted).toFixed(6), cls: parseFloat(data.formatted) === 0 ? "zero" : "num" },
+            { val: data.tokenAddress, cls: "dim" },
+          ]]
+        );
+      } catch (err) {
+        showError("tok-output", err.message);
+      }
+    }
+
+    async function fetchNFT() {
+      const address = document.getElementById("nft-address").value.trim();
+      const contract = document.getElementById("nft-contract").value.trim();
+      const chain = document.getElementById("nft-chain").value;
+      if (!address || !contract) return alert("Enter both wallet and contract addresses.");
+      showLoading("nft-output");
+      try {
+        const data = await apiFetch(`/api/nft?address=${encodeURIComponent(address)}&contract=${encodeURIComponent(contract)}&chain=${chain}`);
+        showTable("nft-output",
+          ["Chain", "Collection", "Symbol", "Owned", "Contract"],
+          [[
+            data.chain,
+            data.collection,
+            data.symbol,
+            { val: data.count, cls: parseInt(data.count) === 0 ? "zero" : "num" },
+            { val: data.contractAddress, cls: "dim" },
+          ]]
+        );
+      } catch (err) {
+        showError("nft-output", err.message);
+      }
+    }
+
+    async function fetchActivity() {
+      const address = document.getElementById("act-address").value.trim();
+      const chain = document.getElementById("act-chain").value;
+      if (!address) return alert("Enter a wallet address.");
+      showLoading("act-output");
+      try {
+        const data = await apiFetch(`/api/activity?address=${encodeURIComponent(address)}&chain=${chain}`);
+        const rows = data.activity.map(r => [
+          r.chain,
+          { val: r.txCount, cls: r.txCount === 0 ? "zero" : "num" },
+        ]);
+        showTable("act-output", ["Chain", "Tx Count"], rows);
+      } catch (err) {
+        showError("act-output", err.message);
+      }
+    }
+
+    async function fetchStatus() {
+      const chain = document.getElementById("status-chain").value;
+      showLoading("status-output");
+      try {
+        const data = await apiFetch(`/api/status?chain=${chain}`);
+        const rows = data.chains.map(r => [
+          r.chain,
+          { val: r.chainId, cls: "dim" },
+          { val: parseInt(r.block).toLocaleString(), cls: "num" },
+        ]);
+        showTable("status-output", ["Chain", "Chain ID", "Latest Block"], rows);
+      } catch (err) {
+        showError("status-output", err.message);
+      }
+    }
+  </script>
+</body>
+</html>

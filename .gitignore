@@ -1,15 +1,21 @@
 # --- Security & Secrets ---
 .env
+.env.*
 *.pem
+*.key
 wallet.json
 config.local.json
 secrets.json
 auth.json
+.npmrc
 
 # --- System Files ---
 .DS_Store
 Thumbs.db
 desktop.ini
+
+# --- Internal / Planning ---
+actions/
 
 # --- Dependency Folders ---
 node_modules/
@@ -31,6 +37,7 @@ logs/
 dist/
 build/
 out/
+coverage/
 *.exe
 *.dll
 *.so
@@ -43,3 +50,6 @@ out/
 *.swo
 .project
 .settings/
+
+# --- Miscellaneous ---
+actions/

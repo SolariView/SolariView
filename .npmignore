@@ -1,0 +1,12 @@
+# Development / editor
+.vscode/
+.idea/
+*.log
+
+# Environment files (never publish secrets)
+.env
+.env.*
+
+# OS noise
+.DS_Store
+Thumbs.db

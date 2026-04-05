@@ -1,0 +1,63 @@
+{
+  "name": "solariview",
+  "version": "0.2.0",
+  "description": "On-chain clarity, local-first. Multi-chain portfolio aggregator for the sovereign developer.",
+  "keywords": [
+    "ethereum",
+    "evm",
+    "blockchain",
+    "portfolio",
+    "cli",
+    "web3",
+    "multichain",
+    "nft",
+    "defi",
+    "privacy"
+  ],
+  "author": "SolariView",
+  "license": "MIT",
+  "homepage": "https://github.com/SolariView/SolariView#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SolariView/SolariView.git"
+  },
+  "bugs": {
+    "url": "https://github.com/SolariView/SolariView/issues"
+  },
+  "type": "module",
+  "main": "src/index.js",
+  "bin": {
+    "solariview": "src/cli.js",
+    "solariview-web": "web/server.js"
+  },
+  "files": [
+    "src/abi.js",
+    "src/chains.js",
+    "src/cli.js",
+    "src/index.js",
+    "src/reader.js",
+    "src/utils.js",
+    "web/",
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "scripts": {
+    "start": "node src/cli.js",
+    "dev:web": "node web/server.js",
+    "test": "node --test src/chains.test.js src/utils.test.js src/reader.test.js"
+  },
+  "dependencies": {
+    "viem": "^2.21.0",
+    "commander": "^12.1.0",
+    "chalk": "^5.3.0",
+    "ora": "^8.1.0",
+    "cli-table3": "^0.6.5"
+  },
+  "devDependencies": {
+    "dotenv": "^16.4.5"
+  }
+}

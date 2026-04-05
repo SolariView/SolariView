@@ -9,15 +9,18 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
-### Added
-- `web/server.test.js` — 15 integration tests covering HTTP method guard, URL length guard, 404, route parameter validation (all 5 routes), UI routes, and rate limiter behaviour
-- `src/reader.test.js` — 5 new happy-path describe blocks using a mock JSON-RPC server: `getNativeBalance`, `getTokenBalance`, `getNFTBalance`, `getTxCount`, `getMultiChainNativeBalances`
-- `src/cli.test.js` — 18 tests for CLI argument validation: `--version`, `--help`, `--timeout` rejection on all 5 commands, and missing required options
-- `src/chains.test.js` — 4 new env-override tests confirming `SOLARIVIEW_RPC_<CHAIN_ID>` is respected at module load time (subprocesses with controlled env)
-- README: `getTxCount` usage example added to Library API section
+---
+
+## [0.2.1] — 2026-04-05
 
 ### Added
-- `.github/prompts/audit.prompt.md` — reusable VS Code Copilot prompt that runs a full security, functionality, compliance, best practice, legal, and bug audit and writes findings to `actions/ACTIONS.md`
+- `SECURITY.md` — responsible disclosure policy, supported versions, and security model summary
+- `.github/workflows/release.yml` — automated release workflow: push a `v*` tag → tests run → npm publish → GitHub Release created
+- `.github/ISSUE_TEMPLATE/bug_report.md` — structured bug report template
+- README: `npm version` and `npm downloads` badges
+
+### Changed
+- CONTRIBUTING.md — documents the automated release process (`npm version` + `git push --follow-tags`)
 
 ---
 

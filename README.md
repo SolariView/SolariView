@@ -209,15 +209,26 @@ import {
   getTokenBalance,
   getNFTBalance,
   getTxCount,
+  getBlockNumber,
+  withRetry,
   resolveChains,
 } from "solariview";
 
+// Native balances across multiple chains
 const chains = resolveChains("ethereum,base");
 const { results, errors } = await getMultiChainNativeBalances(
   "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045",
   chains
 );
 console.log(results);
+
+// Transaction count — proxy for on-chain activity level
+const [ethereum] = resolveChains("ethereum");
+const { chain, chainId, txCount } = await getTxCount(
+  "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045",
+  ethereum
+);
+console.log(`${chain} (${chainId}): ${txCount} transactions`);
 ```
 
 ---

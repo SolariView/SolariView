@@ -48,7 +48,7 @@
   "scripts": {
     "start": "node src/cli.js",
     "dev:web": "node web/server.js",
-    "test": "node --test src/chains.test.js src/utils.test.js src/reader.test.js"
+    "test": "node --test src/chains.test.js src/utils.test.js src/reader.test.js src/cli.test.js web/server.test.js"
   },
   "dependencies": {
     "viem": "^2.21.0",

@@ -11,7 +11,7 @@
 
 Please **do not** open a public issue for security vulnerabilities.
 
-Email: **solari.dawn@pm.me**
+Email: **solariview@pm.me**
 
 Include:
 - A description of the vulnerability and its potential impact

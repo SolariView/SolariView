@@ -5,6 +5,8 @@
 SolariView aggregates your multi-chain digital footprint — portfolios, NFT holdings, and on-chain activity — directly from public RPC nodes into your terminal or browser. No third-party APIs. No telemetry. No data leaks.
 
 [![CI](https://github.com/SolariView/SolariView/actions/workflows/ci.yml/badge.svg)](https://github.com/SolariView/SolariView/actions/workflows/ci.yml)
+[![npm](https://img.shields.io/npm/v/solariview.svg)](https://www.npmjs.com/package/solariview)
+[![npm downloads](https://img.shields.io/npm/dm/solariview.svg)](https://www.npmjs.com/package/solariview)
 [![license](https://img.shields.io/npm/l/solariview.svg)](LICENSE)
 [![node](https://img.shields.io/node/v/solariview.svg)](package.json)
 

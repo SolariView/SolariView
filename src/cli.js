@@ -81,7 +81,7 @@ program
 
       for (const r of results) {
         const bal = parseFloat(r.formatted);
-        const balStr = bal === 0 ? chalk.dim("0") : chalk.green(bal.toFixed(6));
+        const balStr = bal === 0 ? chalk.dim("0") : Number.isFinite(bal) ? chalk.green(bal.toFixed(6)) : chalk.red("?");
         table.push([r.chain, r.symbol, balStr, chalk.dim(r.explorer)]);
       }
 
@@ -139,7 +139,8 @@ program
       console.log(chalk.bold(`\nToken balance on ${chalk.cyan(result.chain)}\n`));
       console.log(`  Token:    ${chalk.white(result.token)} (${chalk.cyan(result.symbol)})`);
       console.log(`  Contract: ${chalk.dim(result.tokenAddress)}`);
-      console.log(`  Balance:  ${chalk.green(parseFloat(result.formatted).toFixed(6))} ${result.symbol}\n`);
+      const tokenBal = parseFloat(result.formatted);
+      console.log(`  Balance:  ${chalk.green(Number.isFinite(tokenBal) ? tokenBal.toFixed(6) : "?")} ${result.symbol}\n`);
     } catch (err) {
       if (spinner) spinner.fail(err.message);
       else console.error(chalk.red(err.message));

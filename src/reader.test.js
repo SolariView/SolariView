@@ -356,3 +356,24 @@ describe("getMultiChainNativeBalances — happy path", () => {
     assert.ok(names.includes("Base"));
   });
 });
+
+// ─── getBlockNumber — happy path ──────────────────────────────────────────────
+
+describe("getBlockNumber — happy path", () => {
+  let rpc;
+
+  before(async () => { rpc = await startMockRpc(); });
+  after(() => rpc.close());
+
+  it("returns the correct shape and values", async () => {
+    const { getBlockNumber } = await import("./reader.js");
+    const chain = { id: 1, name: "Ethereum", symbol: "ETH", rpc: rpc.url, nativeDecimals: 18, explorer: "https://etherscan.io" };
+
+    const result = await getBlockNumber(chain, { timeoutMs: 5000 });
+
+    assert.equal(result.chain, "Ethereum");
+    assert.equal(result.chainId, 1);
+    assert.equal(typeof result.block, "string");
+    assert.ok(BigInt(result.block) > 0n);
+  });
+});

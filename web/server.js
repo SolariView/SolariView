@@ -83,10 +83,6 @@ function htmlResponse(res, html) {
   res.end(html);
 }
 
-function notFound(res) {
-  jsonResponse(res, { error: "Not found" }, 404);
-}
-
 function badRequest(res, message) {
   jsonResponse(res, { error: message }, 400);
 }
@@ -142,7 +138,7 @@ async function handleActivity(res, query) {
     const chains = resolveChains(chain);
     const settled = await Promise.allSettled(chains.map((c) => getTxCount(address, c)));
     const results = settled.filter((s) => s.status === "fulfilled").map((s) => s.value);
-    const errors = settled.filter((s) => s.status === "rejected").map((s) => ({ message: s.reason?.message }));
+    const errors = settled.filter((s) => s.status === "rejected").map((s) => ({ message: s.reason?.message ?? String(s.reason) }));
     jsonResponse(res, { address, activity: results, errors });
   } catch (err) {
     jsonResponse(res, { error: err.message }, 400);
@@ -156,7 +152,7 @@ async function handleStatus(res, query) {
     const chains = resolveChains(chain);
     const settled = await Promise.allSettled(chains.map((c) => getBlockNumber(c)));
     const results = settled.filter((s) => s.status === "fulfilled").map((s) => s.value);
-    const errors = settled.filter((s) => s.status === "rejected").map((s) => ({ message: s.reason?.message }));
+    const errors = settled.filter((s) => s.status === "rejected").map((s) => ({ message: s.reason?.message ?? String(s.reason) }));
     jsonResponse(res, { chains: results, errors });
   } catch (err) {
     jsonResponse(res, { error: err.message }, 400);
@@ -201,7 +197,7 @@ const server = createServer(async (req, res) => {
     if (route === "/api/nft") return await handleNFT(res, query);
     if (route === "/api/activity") return await handleActivity(res, query);
     if (route === "/api/status") return await handleStatus(res, query);
-    notFound(res);
+    jsonResponse(res, { error: "Not found" }, 404);
   } catch (err) {
     jsonResponse(res, { error: "Internal server error" }, 500);
   }

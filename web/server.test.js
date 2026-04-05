@@ -186,6 +186,13 @@ describe("web server — protocol guards and route validation", () => {
     const { status } = await httpRequest("GET", "/index.html", PORT);
     assert.equal(status, 200);
   });
+
+  it("reaches /api/status (does not 404 or 405)", async () => {
+    const { status, body } = await httpRequest("GET", "/api/status", PORT);
+    assert.notEqual(status, 404);
+    assert.notEqual(status, 405);
+    assert.doesNotThrow(() => JSON.parse(body));
+  });
 });
 
 // ─── rate limiter — isolated server (port 13132) ─────────────────────────────

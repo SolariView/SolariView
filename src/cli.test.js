@@ -132,3 +132,39 @@ describe("missing required options", () => {
     assert.notEqual(status, 0);
   });
 });
+
+// ─── --rpc scheme validation ──────────────────────────────────────────────────
+
+describe("--rpc scheme validation", () => {
+  it("balance exits 1 for a file:// --rpc scheme", () => {
+    const { status, stderr } = cli("balance", "--address", ADDR, "--rpc", "file:///etc/passwd");
+    assert.equal(status, 1);
+    assert.ok(stderr.toLowerCase().includes("http"));
+  });
+
+  it("balance exits 1 for a non-URL --rpc value", () => {
+    const { status } = cli("balance", "--address", ADDR, "--rpc", "not-a-url");
+    assert.equal(status, 1);
+  });
+
+  it("balance exits 1 for an ftp:// --rpc scheme", () => {
+    const { status } = cli("balance", "--address", ADDR, "--rpc", "ftp://example.com");
+    assert.equal(status, 1);
+  });
+});
+
+// ─── multi-chain guard ────────────────────────────────────────────────────────
+
+describe("multi-chain guard", () => {
+  it("token exits 1 when --chain resolves to multiple chains", () => {
+    const { status, stderr } = cli("token", "--address", ADDR, "--token", TOKEN, "--chain", "ethereum,base");
+    assert.equal(status, 1);
+    assert.ok(stderr.includes("exactly one"));
+  });
+
+  it("nft exits 1 when --chain resolves to multiple chains", () => {
+    const { status, stderr } = cli("nft", "--address", ADDR, "--contract", TOKEN, "--chain", "ethereum,base");
+    assert.equal(status, 1);
+    assert.ok(stderr.includes("exactly one"));
+  });
+});

@@ -13,6 +13,7 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - `c8` coverage reporting — `npm run test:coverage` generates a V8 coverage report
 - CI: `coverage` job uploads results to Codecov after the test matrix passes
 - README: Codecov badge
+- README: Default RPC endpoints table in Security Model section
 
 ---
 

@@ -320,6 +320,21 @@ SolariView is a read-only, local-first tool. No private keys are ever accepted o
 - **`--rpc` URL scheme** — must be `http://` or `https://`; all other schemes (e.g. `file://`, `ftp://`) are rejected.
 - **Web server inputs** — the local web UI accepts only `GET` requests, rejects URLs longer than 512 characters, and validates required query parameters before reaching any reader logic.
 
+### Default RPC endpoints
+
+Out of the box, SolariView connects to the following public nodes. No account or API key is required. All requests are read-only JSON-RPC calls (`eth_getBalance`, `eth_call`, etc.) and contain no identifying information beyond the queried address.
+
+| Chain | Default RPC | Operator |
+|-------|-------------|----------|
+| Ethereum | `https://eth.llamarpc.com` | LlamaNodes |
+| Arbitrum One | `https://arb1.arbitrum.io/rpc` | Offchain Labs |
+| Optimism | `https://mainnet.optimism.io` | OP Labs |
+| Base | `https://mainnet.base.org` | Coinbase |
+| Polygon | `https://polygon-bor-rpc.publicnode.com` | PublicNode |
+| BNB Chain | `https://bsc-dataseed.binance.org` | Binance |
+
+Any endpoint can be replaced without code changes — see [Custom RPC Endpoints](#custom-rpc-endpoints).
+
 ### Known scope limitation — `--rpc` host validation
 
 `--rpc` validates the URL scheme but does **not** block private or link-local hostnames. The following URLs will pass the scheme check:

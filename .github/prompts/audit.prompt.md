@@ -1,131 +1,37 @@
 ---
-description: "Run a full project audit — security, functionality, compliance, best practice, legal, and bug review — then write the findings to actions/ACTIONS.md"
-name: "SolariView Full Audit"
+description: "Perform an adversarial full-project audit and generate a high-precision ACTIONS.md report."
+name: "SolariView Professional Audit v2"
 agent: "agent"
 ---
 
-Run a full audit of this project and write the results to [actions/ACTIONS.md](../../actions/ACTIONS.md).
+# MISSION
+Run a rigorous, adversarial audit of this project. Your goal is to identify vulnerabilities, logic flaws, and compliance gaps. Write the results as a complete replacement for [actions/ACTIONS.md](../../actions/ACTIONS.md).
 
-## What to read
+# CONTEXT ACQUISITION
+Read and cross-reference every file below. Do not summarize; analyze the actual logic:
+[List of files remains the same...]
 
-Read every source file before writing findings:
+*Note: If your environment allows, execute `git status` and `npm list` to verify state and dependency trees.*
 
-- [package.json](../../package.json)
-- [src/cli.js](../../src/cli.js)
-- [src/reader.js](../../src/reader.js)
-- [src/utils.js](../../src/utils.js)
-- [src/chains.js](../../src/chains.js)
-- [src/abi.js](../../src/abi.js)
-- [src/index.js](../../src/index.js)
-- [src/chains.test.js](../../src/chains.test.js)
-- [src/utils.test.js](../../src/utils.test.js)
-- [src/reader.test.js](../../src/reader.test.js)
-- [web/server.js](../../web/server.js)
-- [web/index.html](../../web/index.html)
-- [README.md](../../README.md)
-- [CHANGELOG.md](../../CHANGELOG.md)
-- [CONTRIBUTING.md](../../CONTRIBUTING.md)
-- [LICENSE](../../LICENSE)
-- [.gitignore](../../.gitignore)
-- [.npmignore](../../.npmignore)
-- [.github/workflows/ci.yml](../workflows/ci.yml)
+# AUDIT CRITERIA
 
-Also run `git status` to understand the current commit state.
+### 1. Security & Edge Cases (High Priority)
+- **Injection:** Scrutinize `src/reader.js` and `web/server.js` for unvalidated inputs.
+- **RPC/SSRF:** Check if `--rpc` flags allow connections to internal metadata services.
+- **Async Logic:** Verify `withRetry` placement. **Rule:** `withRetry` must wrap the call; `.catch()` must follow, not precede, the retry wrapper.
+- **Secrets:** Scan for hardcoded strings in `src/abi.js` or `src/chains.js`.
 
-## Audit areas
+### 2. Reliability & Maintenance
+- **Type Safety:** Identify where `parseInt/parseFloat` lack `isNaN` checks.
+- **Dead Code:** Find exported functions/variables in `utils.js` or `chains.js` never imported elsewhere.
+- **Tests:** Map tests to source files. Identify "Dark Zones" (0% coverage).
 
-### 1. Security Review
-- Check all OWASP Top 10 categories against the codebase
-- Check for injection vectors (user inputs, address params, URL params)
-- Check for secret or credential exposure
-- Check CSP and security headers in web/server.js
-- Check rate limiter implementation
-- Check XSS handling in web/index.html
-- Check .gitignore and .npmignore for secret exclusions
-- Check for SSRF via --rpc or any configurable URL input
-- Note any minor observations even if not exploitable
+### 3. Compliance & Legal
+- **License:** Verify MIT. Check dependencies for "License Contamination" (GPL/Copyleft).
+- **Distribution:** Ensure `package.json` `files[]` whitelist prevents `tests/` or `.env` files from being published to npm.
 
-### 2. Bug Review
-- Check all parseInt/parseFloat calls for NaN handling
-- Check all dead code (defined but never called functions, exported but unused symbols)
-- Check for any missing input validation at API and CLI boundaries
-- Check Promise.allSettled error shape consistency
-- Check for any off-by-one or type coercion issues
-
-### 3. Functionality Review
-- Verify all CLI commands are implemented and consistent
-- Verify all --flags work as documented in README
-- Verify web API endpoints match CLI capabilities
-- Verify library API exports in index.js match reader.js exports
-- Verify withRetry is applied to every RPC call
-- Verify .catch() fallbacks for optional fields are placed after withRetry (not before)
-- Verify graceful degradation on partial chain failures
-
-### 4. Test Coverage Review
-- List all test files and test counts
-- Identify which modules have no tests
-- Identify which branches or edge cases are untested
-- Rate the coverage as adequate / needs improvement / critical gap
-
-### 5. Compliance Review
-- GDPR/CCPA: does the tool collect, store, or transmit user data?
-- npm package: verify files[] contains only intended files, no secrets
-- Financial data: is a disclaimer present or needed?
-- Public RPC endpoints: any ToS concerns?
-
-### 6. Best Practice Review
-- Check package.json for engines, license, files[], bin entries
-- Check all bin scripts have #!/usr/bin/env node
-- Check ESM consistency (no require() except where intentional)
-- Check for over-engineering or unnecessary complexity
-- Check dependency count and whether all are needed
-- Check that devDependencies are correctly separated
-
-### 7. Legal Review
-- Verify license (MIT) is present and correct
-- Verify all dependency licenses are compatible (no GPL or copyleft)
-- Note if copyright holder is a legal entity or informal name
-- Note any IP or trademark considerations
-
-## Output format
-
-Write a single, complete replacement for [actions/ACTIONS.md](../../actions/ACTIONS.md) using this structure:
-
-```
-# SolariView — Full Audit Report
-**Reviewed: <date> · <version>**
-
-## Status Summary
-Table: Area | Rating | Notes
-
-## Security Review
-OWASP table + observations
-
-## Bug Report
-BUG-XX entries with: description, file, line, fix recommendation
-
-## Functionality Review
-Table of checks
-
-## Test Coverage
-Table of files and counts + coverage gaps
-
-## Compliance Review
-Table of checks + findings
-
-## Best Practice Review
-Table of checks + findings
-
-## Legal Review
-Table of checks + findings
-
-## Recommended Actions Before Next Release
-Priority table: High / Medium / Low | Item | File
-
-## Recommended Actions for Future Releases
-
-## Already Resolved (historical)
-Struck-through completed items from previous audits
-```
-
-Be specific — include file names and line references for every finding. Do not pad with praise. Every section should present findings honestly including items that are fine. Mark items ✅ when clean, ⚠ for minor, ❌ for blocking.
+# OUTPUT REQUIREMENTS
+Write a single, complete replacement for `ACTIONS.md`. 
+- **No Fluff:** Do not praise the code. 
+- **Precision:** Every ⚠ or ❌ must include a File Path and Line Number.
+- **Status Icons:** ✅ (Pass), ⚠ (Minor/Refactor), ❌ (Critical/Blocker).

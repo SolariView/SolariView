@@ -9,6 +9,11 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+- `c8` coverage reporting — `npm run test:coverage` generates a V8 coverage report
+- CI: `coverage` job uploads results to Codecov after the test matrix passes
+- README: Codecov badge
+
 ---
 
 ## [0.2.1] — 2026-04-05

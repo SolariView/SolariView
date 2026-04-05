@@ -1,5 +1,5 @@
 /** Errors that indicate a transient RPC failure worth retrying. */
-export const RETRYABLE = /timeout|ECONNRESET|ETIMEDOUT|rate.?limit|429|503|fetch failed/i;
+export const RETRYABLE = /timeout|ECONNRESET|ETIMEDOUT|ENOTFOUND|rate.?limit|429|503|fetch failed/i;
 
 /**
  * Retry an async operation up to `maxAttempts` times with exponential backoff.

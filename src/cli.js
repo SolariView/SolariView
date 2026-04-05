@@ -21,6 +21,16 @@ import {
 const require = createRequire(import.meta.url);
 const { version } = require("../package.json");
 
+function validateRpcUrl(url) {
+  try {
+    const { protocol } = new URL(url);
+    if (protocol !== "http:" && protocol !== "https:") throw new Error();
+  } catch {
+    console.error(chalk.red("--rpc must be an http:// or https:// URL"));
+    process.exit(1);
+  }
+}
+
 program
   .name("solariview")
   .description("On-chain clarity, local-first security.")
@@ -47,7 +57,7 @@ program
 
     try {
       let chains = resolveChains(opts.chain);
-      if (opts.rpc) chains = chains.map((c) => ({ ...c, rpc: opts.rpc }));
+      if (opts.rpc) { validateRpcUrl(opts.rpc); chains = chains.map((c) => ({ ...c, rpc: opts.rpc })); }
       const { results, errors } = await getMultiChainNativeBalances(opts.address, chains, readerOpts);
 
       if (spinner) spinner.stop();
@@ -109,8 +119,14 @@ program
     const readerOpts = { timeoutMs };
 
     try {
-      let [chain] = resolveChains(opts.chain);
-      if (opts.rpc) chain = { ...chain, rpc: opts.rpc };
+      const resolved = resolveChains(opts.chain);
+      if (resolved.length > 1) {
+        if (spinner) spinner.stop();
+        console.error(chalk.red("The token command requires exactly one --chain"));
+        process.exit(1);
+      }
+      let [chain] = resolved;
+      if (opts.rpc) { validateRpcUrl(opts.rpc); chain = { ...chain, rpc: opts.rpc }; }
       const result = await getTokenBalance(opts.address, opts.token, chain, readerOpts);
 
       if (spinner) spinner.stop();
@@ -152,8 +168,14 @@ program
     const readerOpts = { timeoutMs };
 
     try {
-      let [chain] = resolveChains(opts.chain);
-      if (opts.rpc) chain = { ...chain, rpc: opts.rpc };
+      const resolved = resolveChains(opts.chain);
+      if (resolved.length > 1) {
+        if (spinner) spinner.stop();
+        console.error(chalk.red("The nft command requires exactly one --chain"));
+        process.exit(1);
+      }
+      let [chain] = resolved;
+      if (opts.rpc) { validateRpcUrl(opts.rpc); chain = { ...chain, rpc: opts.rpc }; }
       const result = await getNFTBalance(opts.address, opts.contract, chain, readerOpts);
 
       if (spinner) spinner.stop();
@@ -195,7 +217,7 @@ program
 
     try {
       let chains = resolveChains(opts.chain);
-      if (opts.rpc) chains = chains.map((c) => ({ ...c, rpc: opts.rpc }));
+      if (opts.rpc) { validateRpcUrl(opts.rpc); chains = chains.map((c) => ({ ...c, rpc: opts.rpc })); }
       const settled = await Promise.allSettled(chains.map((c) => getTxCount(opts.address, c, readerOpts)));
 
       const results = settled
@@ -257,7 +279,7 @@ program
 
     try {
       let chains = resolveChains(opts.chain);
-      if (opts.rpc) chains = chains.map((c) => ({ ...c, rpc: opts.rpc }));
+      if (opts.rpc) { validateRpcUrl(opts.rpc); chains = chains.map((c) => ({ ...c, rpc: opts.rpc })); }
       const settled = await Promise.allSettled(chains.map((c) => getBlockNumber(c, readerOpts)));
 
       const results = settled

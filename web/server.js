@@ -42,9 +42,13 @@ function isRateLimited(ip) {
   const now = Date.now();
   const windowStart = now - RATE_WINDOW_MS;
   const hits = (rateBuckets.get(ip) ?? []).filter((t) => t > windowStart);
+  if (hits.length >= RATE_LIMIT) {
+    rateBuckets.set(ip, hits); // do not grow the array beyond the limit
+    return true;
+  }
   hits.push(now);
   rateBuckets.set(ip, hits);
-  return hits.length > RATE_LIMIT;
+  return false;
 }
 
 // Prune stale entries every 30 seconds to prevent unbounded growth.
@@ -159,9 +163,10 @@ async function handleStatus(res, query) {
   }
 }
 
+const UI_HTML = readFileSync(path.join(__dirname, "index.html"), "utf8");
+
 function handleUI(res) {
-  const html = readFileSync(path.join(__dirname, "index.html"), "utf8");
-  htmlResponse(res, html);
+  htmlResponse(res, UI_HTML);
 }
 
 // ─── router ───────────────────────────────────────────────────────────────────

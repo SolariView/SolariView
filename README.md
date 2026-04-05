@@ -8,8 +8,6 @@ SolariView aggregates your multi-chain digital footprint — portfolios, NFT hol
 [![license](https://img.shields.io/npm/l/solariview.svg)](LICENSE)
 [![node](https://img.shields.io/node/v/solariview.svg)](package.json)
 
-> **Note:** The `solariview` npm package is currently a name placeholder. Install from source until the full release is published.
-
 ## Features
 
 - **Zero-Telemetry** — No tracking, no remote logging, no analytics.

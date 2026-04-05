@@ -7,6 +7,13 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [Unreleased]
+
+### Added
+- `.github/prompts/audit.prompt.md` — reusable VS Code Copilot prompt that runs a full security, functionality, compliance, best practice, legal, and bug audit and writes findings to `actions/ACTIONS.md`
+
+---
+
 ## [0.2.0] — 2026-04-05
 
 ### Added

@@ -32,6 +32,16 @@ All tests must pass before submitting a PR. The CI pipeline runs the same suite 
 - `isAddress()` validation before any RPC call — do not remove existing guards.
 - Keep the zero-telemetry guarantee: no outbound calls except to the configured RPC endpoints.
 
+## AI-assisted development
+
+This repository includes a VS Code Copilot prompt for running a full project audit:
+
+**`.github/prompts/audit.prompt.md`** — Reads all source files, runs security, functionality, compliance, best practice, legal, and bug reviews, and writes a structured report to `actions/ACTIONS.md`.
+
+To invoke it: open Copilot Chat in VS Code, type `/`, and select **SolariView Full Audit**.
+
+The `actions/` folder is gitignored and contains internal planning documents. It is not part of the published package.
+
 ## Questions
 
 Open a GitHub Discussion or an issue tagged `question`.

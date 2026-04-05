@@ -40,7 +40,7 @@ export const CHAINS = {
     id: 137,
     name: "Polygon",
     symbol: "POL",
-    rpc: process.env.SOLARIVIEW_RPC_137 || "https://polygon-rpc.com",
+    rpc: process.env.SOLARIVIEW_RPC_137 || "https://polygon-bor-rpc.publicnode.com",
     nativeDecimals: 18,
     explorer: "https://polygonscan.com",
   },

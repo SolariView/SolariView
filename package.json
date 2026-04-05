@@ -37,7 +37,8 @@
     "src/index.js",
     "src/reader.js",
     "src/utils.js",
-    "web/",
+    "web/index.html",
+    "web/server.js",
     "README.md",
     "CHANGELOG.md",
     "LICENSE"

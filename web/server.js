@@ -19,12 +19,21 @@ import {
 } from "../src/reader.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const PORT = parseInt(process.env.PORT ?? "3131", 10);
+
+const PORT = (() => {
+  const v = parseInt(process.env.PORT ?? "3131", 10);
+  if (isNaN(v) || v < 1 || v > 65535) throw new Error("PORT must be an integer 1–65535");
+  return v;
+})();
 
 // ─── rate limiter ─────────────────────────────────────────────────────────────
-// Simple token-bucket: max 10 requests per second per IP, sliding window.
+// Simple token-bucket: max N requests per second per IP, sliding window.
 
-const RATE_LIMIT = parseInt(process.env.SOLARIVIEW_RATE_LIMIT ?? "10", 10);
+const RATE_LIMIT = (() => {
+  const v = parseInt(process.env.SOLARIVIEW_RATE_LIMIT ?? "10", 10);
+  if (isNaN(v) || v <= 0) throw new Error("SOLARIVIEW_RATE_LIMIT must be a positive integer");
+  return v;
+})();
 const RATE_WINDOW_MS = 1_000;
 /** @type {Map<string, number[]>} */
 const rateBuckets = new Map();

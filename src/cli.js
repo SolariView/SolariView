@@ -37,7 +37,13 @@ program
   .option("-j, --json", "Output raw JSON")
   .action(async (opts) => {
     const spinner = opts.json ? null : ora(`Fetching balances…`).start();
-    const readerOpts = { timeoutMs: parseInt(opts.timeout, 10) };
+    const timeoutMs = parseInt(opts.timeout, 10);
+    if (isNaN(timeoutMs) || timeoutMs <= 0) {
+      if (spinner) spinner.stop();
+      console.error(chalk.red("--timeout must be a positive integer (milliseconds)"));
+      process.exit(1);
+    }
+    const readerOpts = { timeoutMs };
 
     try {
       let chains = resolveChains(opts.chain);
@@ -94,7 +100,13 @@ program
   .option("-j, --json", "Output raw JSON")
   .action(async (opts) => {
     const spinner = opts.json ? null : ora("Fetching token balance…").start();
-    const readerOpts = { timeoutMs: parseInt(opts.timeout, 10) };
+    const timeoutMs = parseInt(opts.timeout, 10);
+    if (isNaN(timeoutMs) || timeoutMs <= 0) {
+      if (spinner) spinner.stop();
+      console.error(chalk.red("--timeout must be a positive integer (milliseconds)"));
+      process.exit(1);
+    }
+    const readerOpts = { timeoutMs };
 
     try {
       let [chain] = resolveChains(opts.chain);
@@ -131,7 +143,13 @@ program
   .option("-j, --json", "Output raw JSON")
   .action(async (opts) => {
     const spinner = opts.json ? null : ora("Fetching NFT balance…").start();
-    const readerOpts = { timeoutMs: parseInt(opts.timeout, 10) };
+    const timeoutMs = parseInt(opts.timeout, 10);
+    if (isNaN(timeoutMs) || timeoutMs <= 0) {
+      if (spinner) spinner.stop();
+      console.error(chalk.red("--timeout must be a positive integer (milliseconds)"));
+      process.exit(1);
+    }
+    const readerOpts = { timeoutMs };
 
     try {
       let [chain] = resolveChains(opts.chain);
@@ -167,7 +185,13 @@ program
   .option("-j, --json", "Output raw JSON")
   .action(async (opts) => {
     const spinner = opts.json ? null : ora("Fetching activity…").start();
-    const readerOpts = { timeoutMs: parseInt(opts.timeout, 10) };
+    const timeoutMs = parseInt(opts.timeout, 10);
+    if (isNaN(timeoutMs) || timeoutMs <= 0) {
+      if (spinner) spinner.stop();
+      console.error(chalk.red("--timeout must be a positive integer (milliseconds)"));
+      process.exit(1);
+    }
+    const readerOpts = { timeoutMs };
 
     try {
       let chains = resolveChains(opts.chain);
@@ -223,7 +247,13 @@ program
   .option("-j, --json", "Output raw JSON")
   .action(async (opts) => {
     const spinner = opts.json ? null : ora("Checking chain status…").start();
-    const readerOpts = { timeoutMs: parseInt(opts.timeout, 10) };
+    const timeoutMs = parseInt(opts.timeout, 10);
+    if (isNaN(timeoutMs) || timeoutMs <= 0) {
+      if (spinner) spinner.stop();
+      console.error(chalk.red("--timeout must be a positive integer (milliseconds)"));
+      process.exit(1);
+    }
+    const readerOpts = { timeoutMs };
 
     try {
       let chains = resolveChains(opts.chain);

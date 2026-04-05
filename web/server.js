@@ -50,11 +50,6 @@ setInterval(() => {
 
 // ─── helpers ──────────────────────────────────────────────────────────────────
 
-function parseQuery(url) {
-  const u = new URL(url, "http://localhost");
-  return Object.fromEntries(u.searchParams.entries());
-}
-
 function jsonResponse(res, data, status = 200) {
   res.writeHead(status, {
     "Content-Type": "application/json",

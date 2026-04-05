@@ -308,6 +308,34 @@ SolariView is the foundation of a broader privacy-first portfolio intelligence p
 
 ---
 
+## Security Model
+
+SolariView is a read-only, local-first tool. No private keys are ever accepted or stored.
+
+### What is validated
+
+- **Wallet and contract addresses** — rejected before any RPC call if not a valid EVM address.
+- **`--timeout`** — must be a positive integer; non-numeric or zero values exit immediately.
+- **`--rpc` URL scheme** — must be `http://` or `https://`; all other schemes (e.g. `file://`, `ftp://`) are rejected.
+- **Web server inputs** — the local web UI accepts only `GET` requests, rejects URLs longer than 512 characters, and validates required query parameters before reaching any reader logic.
+
+### Known scope limitation — `--rpc` host validation
+
+`--rpc` validates the URL scheme but does **not** block private or link-local hostnames. The following URLs will pass the scheme check:
+
+```
+http://169.254.169.254/  # AWS EC2 instance metadata
+http://metadata.google.internal/  # GCP instance metadata
+http://192.168.x.x/  # RFC-1918 private range
+http://127.0.0.1/  # loopback
+```
+
+**Impact:** The web server does not expose `--rpc` as an HTTP parameter, so there is no SSRF risk in the server path. The risk is limited to CLI invocations where `--rpc` is sourced from untrusted input (e.g. a shell wrapper or CI pipeline that passes user-controlled config). In that context a malicious value could cause the CLI process to make an outbound HTTP request to an internal address.
+
+**Mitigation:** If you wrap SolariView in a script that passes user-provided `--rpc` values, validate the hostname before invocation. A future release will add host-range validation inside `validateRpcUrl`.
+
+---
+
 ## Philosophy
 
 Watching your assets shouldn't mean being watched. SolariView reads directly from public RPC endpoints — no account required, no API keys by default, no usage logs sent anywhere.
